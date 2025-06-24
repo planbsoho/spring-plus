@@ -1,0 +1,31 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+POST localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "email": "asd@google.com",
+  "password": "1234",
+  "userRole": "USER"
+}
+###
+POST localhost:8080/auth/signin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhc2RAZ29vZ2xlLmNvbSIsInVzZXJSb2xlIjoiVVNFUiIsImV4cCI6MTc1MDc1NzU2NSwiaWF0IjoxNzUwNzUzOTY1fQ.9bMDhPMHFOfRzh40h8YymYt1buxmKrJc98a4W6VSUyY
+
+{
+  "email": "asd@google.com",
+  "password": "1234"
+}
+###
+POST localhost:8080/todos
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhc2RAZ29vZ2xlLmNvbSIsInVzZXJSb2xlIjoiVVNFUiIsImV4cCI6MTc1MDc1NzU2NSwiaWF0IjoxNzUwNzUzOTY1fQ.9bMDhPMHFOfRzh40h8YymYt1buxmKrJc98a4W6VSUyY
+
+{
+  "title": "제목1",
+  "contents": "내용1"
+}

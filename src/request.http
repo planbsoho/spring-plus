@@ -30,8 +30,8 @@ Content-Type: application/json
 Authorization: {{accessToken}}
 
 {
-  "title": "제목7",
-  "contents": "내용77"
+  "title": "제목8",
+  "contents": "할일"
 }
 ###
 GET localhost:8080/todos/search?weather=glaze

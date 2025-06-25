@@ -30,7 +30,10 @@ public class Todo extends Timestamped {
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "todo")
+    /**
+     * Todo 저장시 연관된 manager도 함꼐 저장되도록 cascade 속성 추가
+     */
+    @OneToMany(mappedBy = "todo",cascade = CascadeType.PERSIST)
     private List<Manager> managers = new ArrayList<>();
 
     public Todo(String title, String contents, String weather, User user) {

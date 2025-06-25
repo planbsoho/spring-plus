@@ -7,25 +7,34 @@ POST localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "email": "asd@google.com",
+  "email": "abc@google.com",
   "password": "1234",
-  "userRole": "USER"
+  "userRole": "USER",
+  "nickName": "휘"
 }
 ###
 POST localhost:8080/auth/signin
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhc2RAZ29vZ2xlLmNvbSIsInVzZXJSb2xlIjoiVVNFUiIsImV4cCI6MTc1MDc1NzU2NSwiaWF0IjoxNzUwNzUzOTY1fQ.9bMDhPMHFOfRzh40h8YymYt1buxmKrJc98a4W6VSUyY
 
 {
   "email": "asd@google.com",
   "password": "1234"
 }
+> {%
+
+    client.global.set("accessToken", response.body.bearerToken);
+%}
 ###
 POST localhost:8080/todos
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhc2RAZ29vZ2xlLmNvbSIsInVzZXJSb2xlIjoiVVNFUiIsImV4cCI6MTc1MDc1NzU2NSwiaWF0IjoxNzUwNzUzOTY1fQ.9bMDhPMHFOfRzh40h8YymYt1buxmKrJc98a4W6VSUyY
+Authorization: {{accessToken}}
 
 {
-  "title": "제목1",
-  "contents": "내용1"
+  "title": "제목7",
+  "contents": "내용77"
 }
+###
+GET localhost:8080/todos/search?weather=glaze
+Authorization: {{accessToken}}
+
+###

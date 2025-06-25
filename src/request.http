@@ -7,17 +7,17 @@ POST localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "email": "abc@google.com",
+  "email": "zxc@google.com",
   "password": "1234",
-  "userRole": "USER",
-  "nickName": "휘"
+  "userRole": "ADMIN",
+  "nickName": "관리자"
 }
 ###
 POST localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-  "email": "asd@google.com",
+  "email": "zxc@google.com",
   "password": "1234"
 }
 > {%
@@ -38,3 +38,15 @@ GET localhost:8080/todos/search?weather=glaze
 Authorization: {{accessToken}}
 
 ###
+GET localhost:8080/users/1
+Authorization: {{accessToken}}
+
+###
+PATCH localhost:8080/admin/users/3
+Content-Type: application/json
+Authorization: {{accessToken}}
+
+{
+  "role": "USER"
+}
+

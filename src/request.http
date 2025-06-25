@@ -17,7 +17,7 @@ POST localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-  "email": "zxc@google.com",
+  "email": "abc@google.com",
   "password": "1234"
 }
 > {%
@@ -49,4 +49,20 @@ Authorization: {{accessToken}}
 {
   "role": "USER"
 }
+###
+POST localhost:8080/todos/8/comments
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+{
+  "contents": "아자차"
+}
+
+###
+GET localhost:8080/todos/8/comments
+Authorization: {{accessToken}}
+
+
+###
+
 

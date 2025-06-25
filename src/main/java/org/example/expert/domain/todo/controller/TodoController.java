@@ -42,7 +42,7 @@ public class TodoController {
     }
 
     @GetMapping("/todos/search")
-    public ResponseEntity<Page<TodoResponse>> searchTodos(
+    public ResponseEntity<Page<TodoResponse>> searchTodosWithCondition(
             @RequestParam(required = false) String weather,
             @RequestParam(required = false) LocalDateTime startDate,
             @RequestParam(required = false) LocalDateTime endDate,
@@ -50,6 +50,6 @@ public class TodoController {
             @RequestParam(defaultValue = "10") int size
     ) {
 
-        return ResponseEntity.ok(todoService.searchTodos(weather,startDate,endDate,page,size));
+        return ResponseEntity.ok(todoService.searchTodosWithCondition(weather,startDate,endDate,page,size));
     }
 }

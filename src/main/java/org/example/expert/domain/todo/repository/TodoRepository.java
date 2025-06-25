@@ -17,7 +17,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
 
     /**
-     * 할일을 날씨나, 기간으로도 조회할수 있도록 메서드 추가
+     * 할일을 날씨나, 기간으로도 조회할수 있는 메서드 추가
      * @param weather
      * @param startDate
      * @param endDate
@@ -31,7 +31,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             AND (:endDate IS NULL OR t.modifiedAt <= :endDate)
             ORDER BY t.modifiedAt DESC
             """)
-    Page<Todo> findByWeatherOrDate(
+    Page<Todo> findTodoByWeatherOrDate(
             @Param("weather") String weather,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,

@@ -56,7 +56,7 @@ public class TodoService {
         );
     }
 
-    public Page<TodoResponse> searchTodos(
+    public Page<TodoResponse> searchTodosWithCondition(
             String weather,
             LocalDateTime startDate,
             LocalDateTime endDate,
@@ -65,7 +65,7 @@ public class TodoService {
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Todo> todos = todoRepository.findByWeatherOrDate(
+        Page<Todo> todos = todoRepository.findTodoByWeatherOrDate(
                 weather,
                 startDate,
                 endDate,

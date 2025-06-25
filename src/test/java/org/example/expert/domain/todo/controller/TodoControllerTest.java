@@ -59,6 +59,10 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.title").value(title));
     }
 
+    /**
+     * 올바른 예외 기대값으로 수정
+     * @throws Exception
+     */
     @Test
     void todo_단건_조회_시_todo가_존재하지_않아_예외가_발생한다() throws Exception {
         // given

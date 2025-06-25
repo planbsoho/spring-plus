@@ -27,6 +27,12 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final WeatherClient weatherClient;
 
+    /**
+     * 클래스에 readOnly=true로 일괄적용되어 발생하는 오류를 Transactional 기본값인 readOnly = false 로 수정
+     * @param authUser
+     * @param todoSaveRequest
+     * @return
+     */
     @Transactional
     public TodoSaveResponse saveTodo(AuthUser authUser, TodoSaveRequest todoSaveRequest) {
         User user = User.fromAuthUser(authUser);
@@ -59,7 +65,7 @@ public class TodoService {
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Todo> todos = todoRepository.findByTodosByWeatherOrDate(
+        Page<Todo> todos = todoRepository.findByWeatherOrDate(
                 weather,
                 startDate,
                 endDate,

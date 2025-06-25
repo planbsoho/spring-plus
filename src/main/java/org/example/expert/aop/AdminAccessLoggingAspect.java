@@ -19,16 +19,11 @@ public class AdminAccessLoggingAspect {
 
     private final HttpServletRequest request;
 
-    @Before("execution(* org.example.expert.domain.user.controller.UserController.getUser(..))")
-    public void logAfterChangeUserRoleV1(JoinPoint joinPoint) {
-        String userId = String.valueOf(request.getAttribute("userId"));
-        String requestUrl = request.getRequestURI();
-        LocalDateTime requestTime = LocalDateTime.now();
 
-        log.info("Admin Access Log - User ID: {}, Request Time: {}, Request URL: {}, Method: {}",
-                userId, requestTime, requestUrl, joinPoint.getSignature().getName());
-    }
-
+    /**
+     * 기존 메서드가 아닌 changeUserRole 메서드가 실행되기전 log를 남기도록 수정
+     * @param joinPoint
+     */
     @Before("execution(* org.example.expert.domain.user.controller.UserAdminController.changeUserRole(..))")
     public void logBeforeChangeUserRole(JoinPoint joinPoint) {
         String userId = String.valueOf(request.getAttribute("userId"));
@@ -38,6 +33,5 @@ public class AdminAccessLoggingAspect {
         log.info("Admin Access Log - User ID: {}, Request Time: {}, Request URL: {}, Method: {}",
                 userId, requestTime, requestUrl, joinPoint.getSignature().getName());
     }
-//    UserAdminController 클래스의 changeUserRole() 메소드가 실행 전 동작해야해요.
-//AdminAccessLoggingAspect 클래스에 있는 AOP가 개발 의도에 맞도록 코드를 수정해주세요.
+
 }

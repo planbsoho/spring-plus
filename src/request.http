@@ -2,7 +2,7 @@
 GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
-###
+### 회원가입
 POST localhost:8080/auth/signup
 Content-Type: application/json
 
@@ -12,7 +12,7 @@ Content-Type: application/json
   "userRole": "ADMIN",
   "nickName": "관리자"
 }
-###
+### 로그인
 POST localhost:8080/auth/signin
 Content-Type: application/json
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 
     client.global.set("accessToken", response.body.bearerToken);
 %}
-###
+### todo생성
 POST localhost:8080/todos
 Content-Type: application/json
 Authorization: {{accessToken}}
@@ -33,15 +33,15 @@ Authorization: {{accessToken}}
   "title": "제목8",
   "contents": "할일"
 }
-###
+### todo 조회필터
 GET localhost:8080/todos/search?weather=glaze
 Authorization: {{accessToken}}
 
-###
+### 유저 조회
 GET localhost:8080/users/1
 Authorization: {{accessToken}}
 
-###
+### 유저 ROLE 수정
 PATCH localhost:8080/admin/users/3
 Content-Type: application/json
 Authorization: {{accessToken}}
@@ -49,7 +49,7 @@ Authorization: {{accessToken}}
 {
   "role": "USER"
 }
-###
+### 댓글생성
 POST localhost:8080/todos/8/comments
 Authorization: {{accessToken}}
 Content-Type: application/json
@@ -58,11 +58,13 @@ Content-Type: application/json
   "contents": "아자차"
 }
 
-###
+### 댓글 조회
 GET localhost:8080/todos/8/comments
 Authorization: {{accessToken}}
 
+### querydsl 을 이용한 todo조회
+GET localhost:8080/todos/8/with-user
+Authorization: {{accessToken}}
 
-###
 
 

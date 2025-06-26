@@ -7,6 +7,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.service.TodoService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 public class TodoController {
 
     private final TodoService todoService;
+
 
     @PostMapping("/todos")
     public ResponseEntity<TodoSaveResponse> saveTodo(
@@ -36,9 +38,14 @@ public class TodoController {
         return ResponseEntity.ok(todoService.getTodos(page, size));
     }
 
-    @GetMapping("/todos/{todoId}")
-    public ResponseEntity<TodoResponse> getTodo(@PathVariable long todoId) {
-        return ResponseEntity.ok(todoService.getTodo(todoId));
+    /**
+     * 쿼리 DSL을 사용한 todo 조회
+     * @param todoId
+     * @return todoWithUser
+     */
+    @GetMapping("/todos/{todoId}/with-user")
+    public ResponseEntity<TodoResponse> getTodoWithUser(@PathVariable Long todoId) {
+        return ResponseEntity.ok(todoService.getTodoWithUser(todoId));
     }
 
     @GetMapping("/todos/search")
@@ -52,4 +59,5 @@ public class TodoController {
 
         return ResponseEntity.ok(todoService.searchTodosWithCondition(weather,startDate,endDate,page,size));
     }
+
 }

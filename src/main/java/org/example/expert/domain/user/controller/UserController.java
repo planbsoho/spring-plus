@@ -1,7 +1,7 @@
 package org.example.expert.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.common.annotation.Auth;
+
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserResponse;
@@ -24,18 +24,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
-//    @PutMapping("/users")
-//    public void changePassword1(@Auth AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
-//        userService.changePassword(authUser.getId(), userChangePasswordRequest);
-//    }
-//    @PutMapping("/users")
-//    public void changePassword2(@AuthenticationPrincipal User user, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
-//        userService.changePassword(Long.parseLong(user.getUsername()), userChangePasswordRequest);
-//    }
     @PutMapping("/users")
     public void changePassword(@AuthenticationPrincipal AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
         userService.changePassword(authUser.getId(), userChangePasswordRequest);
     }
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 }

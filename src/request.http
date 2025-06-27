@@ -32,6 +32,14 @@ Authorization: {{accessToken}}
   "title": "제목8",
   "contents": "할일"
 }
+### security 접근권한확인, USEROLE변경
+PATCH localhost:8080/admin/users/1
+Content-Type: application/json
+Authorization: {{accessToken}}
+
+{
+  "role": "ADMIN"
+}
 ### todo 조회필터
 GET localhost:8080/todos/search?weather=glaze
 Authorization: {{accessToken}}

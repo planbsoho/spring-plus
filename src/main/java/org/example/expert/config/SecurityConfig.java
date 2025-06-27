@@ -11,10 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-//- 기존 `Filter`와 `Argument Resolver`를 사용하던 코드들을 Spring Security로 변경해주세요.
-//    - 접근 권한 및 유저 권한 기능은 그대로 유지해주세요.
-//    - 권한은 Spring Security의 기능을 사용해주세요.
-//- 토큰 기반 인증 방식은 유지할 거예요. JWT는 그대로 사용해주세요.
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

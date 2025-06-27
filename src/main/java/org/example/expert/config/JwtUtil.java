@@ -57,6 +57,9 @@ public class JwtUtil {
     }
 
     public Claims extractClaims(String token) {
+        if(!StringUtils.hasText(token)) {
+            throw new ServerException("JWT 토큰이 문제가있습니다");
+        }
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

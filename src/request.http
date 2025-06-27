@@ -7,10 +7,10 @@ POST localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "email": "zxc@google.com",
+  "email": "123@google.com",
   "password": "1234",
   "userRole": "ADMIN",
-  "nickName": "관리자"
+  "nickName": "test1"
 }
 ### 로그인
 POST localhost:8080/auth/signin
@@ -21,7 +21,6 @@ Content-Type: application/json
   "password": "1234"
 }
 > {%
-
     client.global.set("accessToken", response.body.bearerToken);
 %}
 ### todo생성

@@ -7,6 +7,10 @@ import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,8 +24,18 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
+//    @PutMapping("/users")
+//    public void changePassword1(@Auth AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+//        userService.changePassword(authUser.getId(), userChangePasswordRequest);
+//    }
+//    @PutMapping("/users")
+//    public void changePassword2(@AuthenticationPrincipal User user, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+//        userService.changePassword(Long.parseLong(user.getUsername()), userChangePasswordRequest);
+//    }
     @PutMapping("/users")
-    public void changePassword(@Auth AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+    public void changePassword(@AuthenticationPrincipal AuthUser authUser, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
         userService.changePassword(authUser.getId(), userChangePasswordRequest);
     }
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 }

@@ -10,15 +10,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.enums.UserRole;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
+import java.rmi.ServerException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,45 +44,43 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if (url.startsWith("/auth")) {
+        if (antPathMatcher.match("/auth/**", url)) {
             chain.doFilter(request, response);
             return;
         }
 
         String bearerJwt = httpRequest.getHeader("Authorization");
 
-        if (bearerJwt == null) {
-            // 토큰이 없는 경우 400을 반환합니다.
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰이 필요합니다.");
+        if(bearerJwt == null || !bearerJwt.startsWith("Bearer")) {
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
             return;
         }
 
         String jwt = jwtUtil.substringToken(bearerJwt);
 
         try {
-            // JWT 유효성 검사와 claims 추출
             Claims claims = jwtUtil.extractClaims(jwt);
+
             if (claims == null) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
                 return;
             }
 
-            UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
+            Long userId = Long.parseLong(claims.getSubject());
+            String email = claims.get("email", String.class);
+            String nickName = claims.get("nickName",String.class);
+            String userRoleString = claims.get("userRole", String.class);
 
-            httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            httpRequest.setAttribute("email", claims.get("email"));
-            httpRequest.setAttribute("userRole", claims.get("userRole"));
-            httpRequest.setAttribute("nickName",claims.get("nickname"));
+            UserRole userRole = UserRole.valueOf(userRoleString);
+            AuthUser authUser = new AuthUser(userId, email,userRole,nickName);
 
-            if (url.startsWith("/admin")) {
-                // 관리자 권한이 없는 경우 403을 반환합니다.
-                if (!UserRole.ADMIN.equals(userRole)) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
-                    return;
-                }
-                chain.doFilter(request, response);
-                return;
-            }
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    authUser,
+                    null,
+                    List.of(new SimpleGrantedAuthority(("ROLE_"+userRole.name())))
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             chain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
@@ -82,11 +92,15 @@ public class JwtFilter implements Filter {
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
+        } catch (ServerException e) {
+            log.error("JWTUtil 예외전파 : {}", e.getMessage(), e);
+                    httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,e.getMessage());
         } catch (Exception e) {
             log.error("Internal server error", e);
             httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Override
     public void destroy() {

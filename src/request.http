@@ -7,17 +7,17 @@ POST localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "email": "123@google.com",
+  "email": "q@google.com",
   "password": "1234",
-  "userRole": "ADMIN",
-  "nickName": "test1"
+  "userRole": "USER",
+  "nickName": "곽도원"
 }
 ### 로그인
 POST localhost:8080/auth/signin
 Content-Type: application/json
 
 {
-  "email": "abc@google.com",
+  "email": "q@google.com",
   "password": "1234"
 }
 > {%
@@ -29,8 +29,8 @@ Content-Type: application/json
 Authorization: {{accessToken}}
 
 {
-  "title": "제목8",
-  "contents": "할일"
+  "title": "10위권",
+  "contents": "매드맥스:분노의 도로"
 }
 ### security 접근권한확인, USEROLE변경
 PATCH localhost:8080/admin/users/1
@@ -40,8 +40,8 @@ Authorization: {{accessToken}}
 {
   "role": "ADMIN"
 }
-### todo 조회필터
-GET localhost:8080/todos/search?weather=glaze
+### todo 조회필터 날씨,기간
+GET localhost:8080/todos/search?weather=clear and wet&endDate=2025-06-27T16:34:03
 Authorization: {{accessToken}}
 
 ### 유저 조회
@@ -70,8 +70,34 @@ GET localhost:8080/todos/8/comments
 Authorization: {{accessToken}}
 
 ### querydsl 을 이용한 todo조회
-GET localhost:8080/todos/8/with-user
+GET localhost:8080/todos/search-querydsl?nickname=리포터
 Authorization: {{accessToken}}
+Content-Type: application/json
+
+### queryDSL : 포함하는 제목
+GET localhost:8080/todos/contain-titles?title=사자
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+### queryDSL : 포함제목, 포함닉네임 required=false
+GET localhost:8080/todos/contain-titles-nicknames?nickname=도원
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+### queryDSL : projection
+GET localhost:8080/todos/tuple/containers?nickname=관리자 //  아래로수정 동작x
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+### queryDSL : +createAt +manager,comment
+GET localhost:8080/todos/search-details?startDate=2025-06-28?nickname=도
+Authorization: {{accessToken}}
+
+### 기간, 이름, 제목일부등 페이징하여 조회 10번과제
+GET localhost:8080/todos/search-page?nickname=사자&page=0
+Authorization: {{accessToken}}
+
+
 
 
 

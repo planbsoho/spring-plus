@@ -5,8 +5,9 @@ import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
-import org.example.expert.domain.todo.dto.response.TodoResponse;
-import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.request.TodoSearchRequestDto;
+import org.example.expert.domain.todo.dto.request.TodoSearchWithPagingRequestDto;
+import org.example.expert.domain.todo.dto.response.*;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.QTodoRepository;
 import org.example.expert.domain.todo.repository.TodoRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +60,16 @@ public class TodoService {
         );
     }
 
+    /**
+     * JPQL 3번과제
+     * 날씨 수정일 기준으로 찾기
+     * @param weather
+     * @param startDate
+     * @param endDate
+     * @param page
+     * @param size
+     * @return
+     */
     public Page<TodoResponse> searchTodosWithCondition(
             String weather,
             LocalDateTime startDate,
@@ -67,12 +79,7 @@ public class TodoService {
     ) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Todo> todos = todoRepository.findTodoByWeatherOrDate(
-                weather,
-                startDate,
-                endDate,
-                pageable
-        );
+        Page<Todo> todos = todoRepository.findTodoByWeatherOrDate(weather, startDate, endDate, pageable);
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
@@ -102,11 +109,11 @@ public class TodoService {
     }
 
     /**
-     * 쿼리 DSL을 사용한 todo 조회
+     * QueryDsl을 사용한 todo 조회 8번과제
      * @param todoId
      * @return todoWithUser
      */
-    public TodoResponse getTodoWithUser(Long todoId) {
+    public TodoResponse findTodoWithUser(Long todoId) {
         Todo todo = qTodoRepository.findByIdWithUser(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
@@ -121,5 +128,40 @@ public class TodoService {
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         );
+    }
+    /**
+     * 부분제목으로검색 연습
+     * queryDSL
+     */
+//    public List<TodoContainsTitleDto> findTodoContainsTitle(String title) {
+//        List<Todo> todos = qTodoRepository.findTodoContainsTitle(title);
+//        return todos.stream()
+//                .map(TodoContainsTitleDto::new)
+//                .toList();
+//    }
+//    /**
+//     * 부분제목, 부분별명 연습
+//     * queryDSL
+//     */
+//    public List<TodoContainsTitleDto> findTodoContainsTitle(String title,String nickname) {
+//        List<Todo> todos = qTodoRepository.findTodoContainsTitle(title, nickname);
+//        return todos.stream()
+//                .map(TodoContainsTitleDto::new)
+//                .toList();
+//    }
+    /**
+     * projection 사용 연습
+     */
+    public List<TodoContainsDataDto> findTodoContainsTitleAndNickname (String title, String nickname) {
+        return qTodoRepository.findTodoContainsTitleAndNickname(title, nickname);
+    }
+    /**
+     * 기한 조건 추가 10번과제
+     */
+    public List<TodoContainsDataDto> searchTodosByConditions(TodoSearchRequestDto request) {
+        return qTodoRepository.searchTodosByConditions(request);
+    }
+    public Page<TodoSearchWithPagingResponseDto> searchWithPaging(TodoSearchWithPagingRequestDto request, Pageable pageable) {
+        return qTodoRepository.searchWithPaging(request, pageable);
     }
 }

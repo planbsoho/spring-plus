@@ -96,8 +96,14 @@ Authorization: {{accessToken}}
 ### 기간, 이름, 제목일부등 페이징하여 조회 10번과제
 GET localhost:8080/todos/search-page?nickname=사자&page=0
 Authorization: {{accessToken}}
+### 메니저 aop적용확인
+POST localhost:8080/todos/50/managers
+Authorization: {{accessToken}}
+Content-Type: application/json
 
-
+{
+  "managerUserId": 3
+}
 
 
 

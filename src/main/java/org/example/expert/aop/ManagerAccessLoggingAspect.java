@@ -25,16 +25,15 @@ public class ManagerAccessLoggingAspect {
     @Before("managerSavePointcut()")
     public void logManagerSaveAttempt(JoinPoint joinPoint) {
         try {
-            // 메서드 인자에서 필요한 정보 추출
-            // saveManager(AuthUser authUser, long todoId, ManagerSaveRequest managerSaveRequest)
-            Long todoId = (Long) joinPoint.getArgs()[1]; // save 메서드의 두 번째 인자
-            ManagerSaveRequest request = (ManagerSaveRequest) joinPoint.getArgs()[2]; // save 메서드의 세 번째 인자
 
-            String logMessage = String.format("매니저 등록 시도 Todo ID: %d, 담당자 ID: %d",
+            Long todoId = (Long) joinPoint.getArgs()[1];
+            ManagerSaveRequest request = (ManagerSaveRequest) joinPoint.getArgs()[2];
+
+            String message = String.format("매니저 등록 시도 Todo ID: %d, 담당자 ID: %d",
                     todoId, request.getManagerUserId());
 
-            activityLogService.saveLog(ActivityType.MANAGER_REGISTRATION_ATTEMPT, logMessage, todoId, "ATTEMPT");
-            log.info("AOP Before {}", logMessage);
+            activityLogService.saveLog(ActivityType.MANAGER_REGISTRATION_ATTEMPT, message, todoId, "ATTEMPT");
+            log.info("AOP Before {}", message);
         } catch (Exception e) {
             log.error("매니저 저장 시도 로깅 실패: {}", e.getMessage(), e);
         }
@@ -46,13 +45,29 @@ public class ManagerAccessLoggingAspect {
         try {
             Long todoId = (Long) joinPoint.getArgs()[1];
 
+            String message = String.format("매니저 등록 성공  Todo ID: %d", todoId);
 
-            String logMessage = String.format("매니저 등록 성공  Todo ID: %d", todoId);
-
-            activityLogService.saveLog(ActivityType.MANAGER_REGISTRATION_SUCCESS, logMessage, todoId, "SUCCESS");
-            log.info("AOP AfterReturning {}", logMessage);
+            activityLogService.saveLog(ActivityType.MANAGER_REGISTRATION_SUCCESS, message, todoId, "SUCCESS");
+            log.info("AOP AfterReturning {}", message);
         } catch (Exception e) {
             log.error("Failed to log manager save success: {}", e.getMessage(), e);
+        }
+    }
+    //매니저 등록 메서드 실패시 로그출력
+    @AfterThrowing(pointcut = "managerSavePointcut()",throwing = "ex")
+    public void logManagerSaveFail(JoinPoint joinPoint, Throwable ex) {
+        try {
+            Long todoId = (Long) joinPoint.getArgs()[1];
+            ManagerSaveRequest request = (ManagerSaveRequest) joinPoint.getArgs()[2];
+
+            String message = String.format("매니저등록실패 - TodoId : %d 담당자 id:, 에러: %s",
+            todoId, request,ex.getMessage());
+
+            activityLogService.saveLog(ActivityType.MANAGER_REGISTRATION_FAIL, message, todoId, "Failed");
+            log.info("AOP AfterThrowing {}", message);
+
+        } catch (Exception e) {
+            log.error("AOP 단계에서 매니저 등록 실패 로그를 남기는데 실패 :{}",e.getMessage());
         }
     }
 
